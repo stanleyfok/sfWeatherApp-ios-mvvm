@@ -115,20 +115,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n6d-VI-VTO">
-                                <rect key="frame" x="186" y="386" width="42" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NcS-tQ-pVj" userLabel="TableView">
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="NcS-tQ-pVj" firstAttribute="top" secondItem="VbJ-Ip-zhp" secondAttribute="top" id="8nc-ix-Z3Q"/>
+                            <constraint firstItem="VbJ-Ip-zhp" firstAttribute="bottom" secondItem="NcS-tQ-pVj" secondAttribute="bottom" id="Ix6-k2-Eu0"/>
+                            <constraint firstItem="NcS-tQ-pVj" firstAttribute="leading" secondItem="VbJ-Ip-zhp" secondAttribute="leading" id="jvQ-oT-NTv"/>
+                            <constraint firstItem="VbJ-Ip-zhp" firstAttribute="trailing" secondItem="NcS-tQ-pVj" secondAttribute="trailing" id="kgl-5s-q2D"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="VbJ-Ip-zhp"/>
                     </view>
                     <navigationItem key="navigationItem" title="History" largeTitleDisplayMode="never" id="eRb-8B-jaX"/>
                     <connections>
-                        <outlet property="textLabel" destination="n6d-VI-VTO" id="Jef-Oh-1FT"/>
+                        <outlet property="tableView" destination="NcS-tQ-pVj" id="FUq-Wr-v4z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HmN-3j-4NB" userLabel="First Responder" sceneMemberID="firstResponder"/>

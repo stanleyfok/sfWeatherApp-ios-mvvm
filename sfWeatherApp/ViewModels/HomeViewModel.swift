@@ -18,13 +18,16 @@ struct HomeViewModelData {
 
 class HomeViewModel {
     var owService:OWService
+    var searchHistoryRepo:SearchHistoryRepository
     
     var data:Dynamic<HomeViewModelData>
     
     var lastCityName:String?
     
-    init(owService: OWService) {
+    init(owService: OWService, searchHistoryRepo:SearchHistoryRepository) {
         self.owService = owService
+        self.searchHistoryRepo = searchHistoryRepo
+        //self.searchHistoryRepo.
         
         data = Dynamic(HomeViewModelData(
             cityNameText: "",
@@ -66,6 +69,7 @@ class HomeViewModel {
 
             print("WeatherHomeViewModel - fetchWeather - success")
             
+            // update data
             strongSelf.data.value = {
                 var tmp = strongSelf.data.value
                 tmp.cityNameText = weatherResult.name
@@ -75,6 +79,9 @@ class HomeViewModel {
                 
                 return tmp
             }()
+            
+            // insert search history
+            strongSelf.insertSearchHistory(weatherResult: weatherResult)
         }, failure: { [weak self] error in
             guard let strongSelf = self else { return }
 
@@ -102,6 +109,17 @@ class HomeViewModel {
                 return tmp
             }()
         })
+    }
+    
+    private func insertSearchHistory(weatherResult: OWWeatherResult) {
+        let searchHistory = SearchHistory(cityId: weatherResult.id, citName: weatherResult.name)
+        
+        do {
+            _ = try self.searchHistoryRepo.insert(searchHistory)
+        } catch {
+            print("WeatherHomeViewModel - insertSearchHistory - error")
+            print(error)
+        }
     }
     
     private func getFormattedTemperatureText(temperature: Float?) -> String {

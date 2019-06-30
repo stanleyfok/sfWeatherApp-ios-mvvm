@@ -20,9 +20,10 @@ class HomeViewController: UIViewController {
     var searchController: UISearchController?
     
     let owService:OWService = OWService()
+    let searchHistoryRepo:SearchHistoryRepository = SearchHistoryRepository()
 
     lazy var homeViewModel:HomeViewModel = {
-        return HomeViewModel(owService: owService)
+        return HomeViewModel(owService: owService, searchHistoryRepo: searchHistoryRepo)
     }()
     
     override func viewDidLoad() {
@@ -47,8 +48,7 @@ class HomeViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowHistorySegue" {
             if let destinationVC = segue.destination as? HistoryViewController {
-                // data passing here
-                destinationVC.numberToShow = 100
+                destinationVC.historyViewModel = HistoryViewModel(searchHistoryRepo: searchHistoryRepo)
             }
         }
     }
@@ -74,7 +74,6 @@ class HomeViewController: UIViewController {
     }
     
     private func setupBinding() {
-        
         homeViewModel.data.bind { data in
             DispatchQueue.main.async {
                 self.cityNameLabel.text = data.cityNameText
