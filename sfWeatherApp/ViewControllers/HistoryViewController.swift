@@ -13,6 +13,7 @@ class HistoryViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var historyViewModel:HistoryViewModel?
+    var homeViewControllerDelegate: HomeViewControllerSelectHistoryDelegate?
  
     override func viewDidLoad() {
         super .viewDidLoad()
@@ -71,5 +72,11 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
         cell?.textLabel?.text = searchHistory.citName
         
         return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let searchHistory = (historyViewModel?.data.value.searchHistories[indexPath.row])!;
+
+        self.homeViewControllerDelegate?.onSelectSearchHistory(searchHistory)
     }
 }

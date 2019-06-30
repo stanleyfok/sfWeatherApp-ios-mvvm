@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol HomeViewControllerSelectHistoryDelegate {
+    func onSelectSearchHistory(_ searchHistory: SearchHistory)
+}
+
 class HomeViewController: UIViewController {
     
     @IBOutlet weak var cityNameLabel: UILabel!
@@ -49,6 +53,7 @@ class HomeViewController: UIViewController {
         if segue.identifier == "ShowHistorySegue" {
             if let destinationVC = segue.destination as? HistoryViewController {
                 destinationVC.historyViewModel = HistoryViewModel(searchHistoryRepo: searchHistoryRepo)
+                destinationVC.homeViewControllerDelegate = self
             }
         }
     }
@@ -56,21 +61,10 @@ class HomeViewController: UIViewController {
     private func setupViews() {
         self.hideKeyboardWhenTappedAround()
         
-        //self.searchBar.delegate = self
-        
-        self.viewHistoryButton.addTarget(
-            self,
-            action: #selector(self.viewHistoryButtonTapped),
-            for: .touchUpInside)
-        
         searchController = UISearchController(searchResultsController: nil)
         searchController?.dimsBackgroundDuringPresentation = false
         searchController?.searchBar.delegate = self
         navigationItem.searchController = searchController
-    }
-    
-    func singleTap(sender: UITapGestureRecognizer) {
-        self.searchBar.endEditing(true)
     }
     
     private func setupBinding() {
@@ -110,8 +104,10 @@ extension HomeViewController: UISearchBarDelegate {
     }
 }
 
-extension HomeViewController {
-    @objc func viewHistoryButtonTapped() {
+extension HomeViewController: HomeViewControllerSelectHistoryDelegate {
+    func onSelectSearchHistory(_ searchHistory: SearchHistory) {
+        self.navigationController?.popViewController(animated: true)
         
+        self.homeViewModel.fetchWeatherByCityName(searchHistory.citName)
     }
 }

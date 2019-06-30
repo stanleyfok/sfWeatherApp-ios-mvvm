@@ -19,10 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="KeU-qo-dcB" userLabel="ActivityIndicator">
-                                <rect key="frame" x="197" y="271.5" width="20" height="20"/>
+                                <rect key="frame" x="197" y="241.5" width="20" height="20"/>
                             </activityIndicatorView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QT8-X9-8Gv" userLabel="WeatherInfoView">
-                                <rect key="frame" x="20" y="391.5" width="374" height="219"/>
+                                <rect key="frame" x="20" y="361.5" width="374" height="219"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hong Kong" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="weO-Bb-ttK" userLabel="CityNameLabel">
                                         <rect key="frame" x="0.0" y="20" width="374" height="38"/>
@@ -73,7 +73,7 @@
                             <constraint firstItem="h3n-Nl-Zfn" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Wtg-00-yTx"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="h3n-Nl-Zfn" secondAttribute="bottom" constant="50" id="ewf-WJ-E8z"/>
                             <constraint firstItem="QT8-X9-8Gv" firstAttribute="top" secondItem="KeU-qo-dcB" secondAttribute="bottom" constant="100" id="w7O-Sc-phv"/>
-                            <constraint firstItem="QT8-X9-8Gv" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="yZf-ci-kta"/>
+                            <constraint firstItem="QT8-X9-8Gv" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="-30" id="yZf-ci-kta"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
