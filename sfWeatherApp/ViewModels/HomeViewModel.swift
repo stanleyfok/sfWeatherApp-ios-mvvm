@@ -9,11 +9,42 @@
 import Foundation
 
 struct HomeViewModelData {
-    var cityNameText:String
-    var weatherText:String
-    var temperatureText:String
+    var cityName:String
+    var weather:String
+    var temperature:Float
     var errorMessage:String
     var isLoading:Bool
+    
+    init() {
+        cityName = "--"
+        weather = "--"
+        temperature = Float.nan
+        errorMessage = ""
+        isLoading = false
+    }
+    
+    mutating func update(weatherResult: OWWeatherResult, isLoading: Bool) {
+        cityName = weatherResult.name
+        weather = weatherResult.weather[0].main // danger code...
+        temperature = weatherResult.main.temp
+        
+        self.isLoading = isLoading
+    }
+    
+    mutating func update(isLoading: Bool, errorMessage: String) {
+        self.isLoading = isLoading
+        self.errorMessage = errorMessage
+    }
+    
+    func getFormattedTemperatureText() -> String {
+        if (temperature.isNaN) {
+            return "--°"
+        }
+        
+        let mTemp = (temperature - 273.15);
+        
+        return "\(String(format: "%.1f", mTemp))°";
+    }
 }
 
 class HomeViewModel {
@@ -22,63 +53,38 @@ class HomeViewModel {
     
     var data:Dynamic<HomeViewModelData>
     
-    var lastCityName:String?
-    
     init(owService: OWService, searchHistoryRepo:SearchHistoryRepository) {
         self.owService = owService
         self.searchHistoryRepo = searchHistoryRepo
-        //self.searchHistoryRepo.
         
-        data = Dynamic(HomeViewModelData(
-            cityNameText: "",
-            weatherText: "",
-            temperatureText: "",
-            errorMessage: "",
-            isLoading: false
-        ))
+        data = Dynamic(HomeViewModelData())
     }
     
-    public func fetchDefaultWeather() {
-        // TODO: load from DB
-        data.value = {
-            var tmp = data.value
-            tmp.cityNameText = "--"
-            tmp.weatherText = "--"
-            tmp.temperatureText = self.getFormattedTemperatureText(temperature: nil)
-            
-            return tmp
-        }()
+    func fetchDefaultWeather() {
+        do {
+            if let searchHistory = try searchHistoryRepo.findLatest() {
+                let fetchType:OWFetchCurrentWeatherType = .byCityId(cityId: searchHistory.cityId)
+                self.fetchCurrentWeather(fetchType)
+            }
+        } catch {
+            print("WeatherHomeViewModel - fetchDefaultWeather - error")
+            print(error)
+        }
     }
     
-    public func fetchWeatherByCityName(_ cityName: String) {
+    func fetchCurrentWeather(_ fetchType: OWFetchCurrentWeatherType) {
         print("WeatherHomeViewModel - fetchWeather")
         
-        lastCityName = cityName
-        
-        data.value = {
-            var tmp = data.value
-            tmp.isLoading = true
-            tmp.errorMessage = ""
-            
-            return tmp
-        }()
+        self.data.value.update(isLoading: true, errorMessage: "")
         
         // to do error handling
-        owService.fetchWeatherByCityName(cityName, success: {  [weak self] weatherResult in
+        owService.fetchCurrentWeather(fetchType: fetchType, success: {  [weak self] weatherResult in
             guard let strongSelf = self else { return }
 
             print("WeatherHomeViewModel - fetchWeather - success")
             
             // update data
-            strongSelf.data.value = {
-                var tmp = strongSelf.data.value
-                tmp.cityNameText = weatherResult.name
-                tmp.weatherText = weatherResult.weather[0].main
-                tmp.temperatureText = strongSelf.getFormattedTemperatureText(temperature: weatherResult.main.temp)
-                tmp.isLoading = false
-                
-                return tmp
-            }()
+            strongSelf.data.value.update(weatherResult: weatherResult, isLoading: false)
             
             // insert search history
             strongSelf.insertSearchHistory(weatherResult: weatherResult)
@@ -98,40 +104,21 @@ class HomeViewModel {
                 //strongSelf.errorMessage.value = "Unknown error"
                 errorMessage = "Unknown error"
                 break
-
             }
             
-            strongSelf.data.value = {
-                var tmp = strongSelf.data.value
-                tmp.errorMessage = errorMessage
-                tmp.isLoading = false
-                
-                return tmp
-            }()
+            strongSelf.data.value.update(isLoading: false, errorMessage: errorMessage)
         })
     }
     
     private func insertSearchHistory(weatherResult: OWWeatherResult) {
-        let searchHistory = SearchHistory(cityId: weatherResult.id, citName: weatherResult.name)
+        let searchHistory = SearchHistory(cityId: weatherResult.id, cityName: weatherResult.name, timestamp: Date().currentTimestamp())
         
         do {
+            _ = try self.searchHistoryRepo.delete(searchHistory)
             _ = try self.searchHistoryRepo.insert(searchHistory)
         } catch {
             print("WeatherHomeViewModel - insertSearchHistory - error")
             print(error)
         }
-    }
-    
-    private func getFormattedTemperatureText(temperature: Float?) -> String {
-        if (temperature == nil) {
-            return "--℃";
-        }
-        
-        let mTemp = (temperature! - 273.15);
-        
-        //TODO: if decimal is 0, remove the decimal
-        // e.g. 30.0℃ -> 30℃
-        
-        return "\(String(format: "%.1f", mTemp))℃";
     }
 }

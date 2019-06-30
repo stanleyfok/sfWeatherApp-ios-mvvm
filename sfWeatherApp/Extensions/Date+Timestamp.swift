@@ -1,5 +1,5 @@
 //
-//  SearchHistoryModel.swift
+//  Date+Timestamp.swift
 //  sfWeatherApp
 //
 //  Created by Fok, Stanley on 6/30/19.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-struct SearchHistory {
-    var cityId: Int
-    var cityName: String
-    var timestamp: Int
+extension Date {
+    func currentTimestamp() -> Int {
+        return Int(self.timeIntervalSince1970)
+    }
 }

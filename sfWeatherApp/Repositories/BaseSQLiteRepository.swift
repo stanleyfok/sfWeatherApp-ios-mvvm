@@ -48,6 +48,12 @@ class BaseSQLiteRepository {
         return try db?.prepare(table);
     }
     
+    func findOne(table: Table) throws -> Row? {
+        let row = try db?.pluck(table);
+        
+        return row
+    }
+    
     func insert(_ insert: Insert) throws -> Int64? {
         return try db?.run(insert)
     }

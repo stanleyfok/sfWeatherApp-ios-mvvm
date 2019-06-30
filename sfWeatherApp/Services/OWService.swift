@@ -13,16 +13,39 @@ enum OWServiceError: Error {
     case serverError(errorResponse: OWErrorResult)
 }
 
+enum OWFetchCurrentWeatherType {
+    case byCityName(cityName: String)
+    case byCityId(cityId: Int)
+    case byCoordinates(lat: Float, lon: Float)
+}
+
 class OWService:BaseService {
     let baseURL = "https://api.openweathermap.org/data/2.5";
     let appIdQueryItem = URLQueryItem(name: "appid", value: "95d190a434083879a6398aafd54d9e73");
     
-    public func fetchWeatherByCityName(_ cityName: String, success: @escaping (OWWeatherResult) -> Void, failure: @escaping (Error) -> Void) {
+    public func fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType, success: @escaping (OWWeatherResult) -> Void, failure: @escaping (Error) -> Void) {
         var urlComponents = URLComponents(string: "\(baseURL)/weather")!
-        urlComponents.queryItems = [
-            URLQueryItem(name: "q", value: cityName),
-            appIdQueryItem
-        ]
+        
+        switch fetchType {
+        case .byCityName(let cityName):
+            urlComponents.queryItems = [
+                URLQueryItem(name: "q", value: cityName),
+            ]
+            break
+        case .byCityId(let cityId):
+            urlComponents.queryItems = [
+                URLQueryItem(name: "id", value: String(cityId)),
+            ]
+            break
+        case .byCoordinates(let lat, let lon):
+            urlComponents.queryItems = [
+                URLQueryItem(name: "lat", value: String(lat)),
+                URLQueryItem(name: "lon", value: String(lon)),
+            ]
+            break
+        }
+        
+        urlComponents.queryItems?.append(appIdQueryItem)
         
         var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = "GET"

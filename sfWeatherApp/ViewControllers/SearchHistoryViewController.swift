@@ -8,11 +8,11 @@
 
 import UIKit
 
-class HistoryViewController: UIViewController {
+class SearchHistoryViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var historyViewModel:HistoryViewModel?
+    var historyViewModel:SearchHistoryViewModel?
     var homeViewControllerDelegate: HomeViewControllerSelectHistoryDelegate?
  
     override func viewDidLoad() {
@@ -47,36 +47,37 @@ class HistoryViewController: UIViewController {
     }
 }
 
-extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
+extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let searchHistories = historyViewModel?.data.value.searchHistories {
-            return searchHistories.count
+        if let cellViewModel = historyViewModel?.data.value.cellViewModels {
+            return cellViewModel.count
         }
         
         return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let searchHistory = (historyViewModel?.data.value.searchHistories[indexPath.row])!;
+        let cellViewModel = (historyViewModel?.data.value.cellViewModels[indexPath.row])!;
         
         var cell = tableView.dequeueReusableCell(withIdentifier: "SearchHistoryCell")
         
         if (cell == nil) {
-            cell = UITableViewCell(style: .default, reuseIdentifier: "SearchHistoryCell")
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "SearchHistoryCell")
         }
         
-        cell?.textLabel?.text = searchHistory.citName
+        cell?.textLabel?.text = cellViewModel.cityName
+        cell?.detailTextLabel?.text = cellViewModel.getFormattedSearchDate()
         
         return cell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let searchHistory = (historyViewModel?.data.value.searchHistories[indexPath.row])!;
+        let cellViewModel = (historyViewModel?.data.value.cellViewModels[indexPath.row])!;
 
-        self.homeViewControllerDelegate?.onSelectSearchHistory(searchHistory)
+        self.homeViewControllerDelegate?.onSelectSearchHistory(cellViewModel)
     }
 }

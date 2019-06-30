@@ -110,7 +110,7 @@
         <!--History-->
         <scene sceneID="AE2-w9-mpQ">
             <objects>
-                <viewController id="ZGg-Iw-4Ii" customClass="HistoryViewController" customModule="sfWeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ZGg-Iw-4Ii" customClass="SearchHistoryViewController" customModule="sfWeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mZ8-2t-phv">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

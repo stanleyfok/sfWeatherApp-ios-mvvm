@@ -16,6 +16,7 @@ class SearchHistoryRepository: BaseSQLiteRepository {
     // schema
     private let cityId = Expression<Int>("cityId")
     private let cityName = Expression<String>("cityName")
+    private let timestamp = Expression<Int>("timestamp")
     
     override init() {
         super.init()
@@ -31,15 +32,16 @@ class SearchHistoryRepository: BaseSQLiteRepository {
     private func tableCreator(_ t: TableBuilder) {
         t.column(cityId, primaryKey: true)
         t.column(cityName)
+        t.column(timestamp)
     }
     
     func findAll() throws -> Array<SearchHistory> {
         let table = Table(tableName)
         var searchHistories:Array<SearchHistory> = Array()
-
-        if let rows = try super.find(table: table) {
-            for record in rows {
-                let searchHistory = SearchHistory(cityId: record[cityId], citName: record[cityName])
+        
+        if let rows = try super.find(table: table.order(timestamp.desc)) {
+            for row in rows {
+                let searchHistory = SearchHistory(cityId: row[cityId], cityName: row[cityName], timestamp: row[timestamp])
                 
                 searchHistories.append(searchHistory)
             }
@@ -48,9 +50,22 @@ class SearchHistoryRepository: BaseSQLiteRepository {
         return searchHistories
     }
     
+    func findLatest() throws -> SearchHistory? {
+        let table = Table(tableName)
+        
+        if let row = try super.findOne(table: table.order(timestamp.desc)) {
+            let searchHistory = SearchHistory(cityId: row[cityId], cityName: row[cityName], timestamp: row[timestamp])
+        
+            return searchHistory
+        }
+    
+        return nil
+    }
+    
     func insert(_ searchHistory: SearchHistory) throws -> Int64? {
         let table = Table(tableName)
-        let insertQuery = table.insert(cityId <- searchHistory.cityId, cityName <- searchHistory.citName)
+        
+        let insertQuery = table.insert(cityId <- searchHistory.cityId, cityName <- searchHistory.cityName, timestamp <- searchHistory.timestamp)
         
         return try super.insert(insertQuery)
     }

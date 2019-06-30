@@ -9,7 +9,7 @@
 import UIKit
 
 protocol HomeViewControllerSelectHistoryDelegate {
-    func onSelectSearchHistory(_ searchHistory: SearchHistory)
+    func onSelectSearchHistory(_ viewModel: SearchHistoryTableViewCellViewModel)
 }
 
 class HomeViewController: UIViewController {
@@ -34,25 +34,15 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         setupViews()
-        
         setupBinding()
         
         homeViewModel.fetchDefaultWeather()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowHistorySegue" {
-            if let destinationVC = segue.destination as? HistoryViewController {
-                destinationVC.historyViewModel = HistoryViewModel(searchHistoryRepo: searchHistoryRepo)
+            if let destinationVC = segue.destination as? SearchHistoryViewController {
+                destinationVC.historyViewModel = SearchHistoryViewModel(searchHistoryRepo: searchHistoryRepo)
                 destinationVC.homeViewControllerDelegate = self
             }
         }
@@ -70,9 +60,9 @@ class HomeViewController: UIViewController {
     private func setupBinding() {
         homeViewModel.data.bind { data in
             DispatchQueue.main.async {
-                self.cityNameLabel.text = data.cityNameText
-                self.weatherLabel.text = data.weatherText
-                self.temperatureLabel.text = data.temperatureText
+                self.cityNameLabel.text = data.cityName
+                self.weatherLabel.text = data.weather
+                self.temperatureLabel.text = data.getFormattedTemperatureText()
                 
                 if (data.isLoading) {
                     self.activityIndicator.startAnimating()
@@ -82,9 +72,10 @@ class HomeViewController: UIViewController {
                 
                 if (data.errorMessage != "") {
                     let alert = UIAlertController(title: "Error", message: data.errorMessage, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: { (_) in
-                        self.homeViewModel.fetchWeatherByCityName(self.homeViewModel.lastCityName!)
-                    }))
+                    //alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: { (_) in
+                        // TODO
+                        //self.homeViewModel.fetchWeatherByCityName(self.homeViewModel.lastCityName!)
+                    //  }))
                     alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                     
                     self.present(alert, animated: true)
@@ -96,7 +87,8 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        self.homeViewModel.fetchWeatherByCityName(searchBar.text!)
+        let fetchType:OWFetchCurrentWeatherType = .byCityName(cityName: searchBar.text!)
+        self.homeViewModel.fetchCurrentWeather(fetchType)
         
         searchBar.endEditing(true)
         
@@ -105,9 +97,10 @@ extension HomeViewController: UISearchBarDelegate {
 }
 
 extension HomeViewController: HomeViewControllerSelectHistoryDelegate {
-    func onSelectSearchHistory(_ searchHistory: SearchHistory) {
+    func onSelectSearchHistory(_ cellViewModel: SearchHistoryTableViewCellViewModel) {
         self.navigationController?.popViewController(animated: true)
         
-        self.homeViewModel.fetchWeatherByCityName(searchHistory.citName)
+        let fetchType:OWFetchCurrentWeatherType = .byCityId(cityId: cellViewModel.cityId)
+        self.homeViewModel.fetchCurrentWeather(fetchType)
     }
 }

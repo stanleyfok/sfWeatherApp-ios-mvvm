@@ -25,7 +25,7 @@ struct OWWeatherResult: Codable {
     var timezone: Int
     var base: String
     var visibility: Int
-    var dt: Int32
+    var dt: Int
     
     var coord: OWCoord
     var weather: [OWWeather]
@@ -76,7 +76,7 @@ struct OWWeatherResult: Codable {
         var id: Int
         var message: Float
         var country: String
-        var sunrise: Int32
-        var sunset: Int32
+        var sunrise: Int
+        var sunset: Int
     }
 }
