@@ -20,13 +20,17 @@ struct SearchHistoryViewModel {
         self.data = Dynamic(SearchHistoryViewModelData(cellViewModels: Array<SearchHistoryTableViewCellViewModel>()))
         self.searchHistoryRepo = searchHistoryRepo
     }
-    
+}
+
+// MARK: Search history repository related
+
+extension SearchHistoryViewModel {
     func fetchAllSearchHistories() {
         do {
-            let searchHistories:Array<SearchHistory> = try self.searchHistoryRepo.findAll()
+            let searchHistories = try self.searchHistoryRepo.findAll()
             
             self.data.value = {
-                var cellViewModels:Array<SearchHistoryTableViewCellViewModel> = Array()
+                var cellViewModels = Array<SearchHistoryTableViewCellViewModel>()
                 
                 for searchHistory in searchHistories {
                     let cellViewModel = SearchHistoryTableViewCellViewModel(searchHistory: searchHistory)
@@ -38,6 +42,21 @@ struct SearchHistoryViewModel {
             }()
         } catch {
             print("HistoryViewModel - fetchAllSearchHistory - error")
+            print(error);
+        }
+    }
+
+    func removeSearchHistory(cityId: Int) {
+        do {
+            if let deletedRows = try self.searchHistoryRepo.deleteByCityId(cityId) {
+                if (deletedRows >= 1) {
+                    let filteredCellViewModels = self.data.value.cellViewModels.filter({ $0.getCityId() != cityId})
+                    self.data.value = SearchHistoryViewModelData(cellViewModels: filteredCellViewModels)
+                }
+            }
+            
+        } catch {
+            print("HistoryViewModel - removeSearchHistory - error")
             print(error);
         }
     }

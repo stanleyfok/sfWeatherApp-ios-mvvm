@@ -9,7 +9,7 @@
 import UIKit
 
 protocol HomeViewControllerSelectHistoryDelegate {
-    func onSelectSearchHistory(_ viewModel: SearchHistoryTableViewCellViewModel)
+    func onSelectSearchHistory(_ cityId: Int)
 }
 
 class HomeViewController: UIViewController {
@@ -42,7 +42,7 @@ class HomeViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowHistorySegue" {
             if let destinationVC = segue.destination as? SearchHistoryViewController {
-                destinationVC.historyViewModel = SearchHistoryViewModel(searchHistoryRepo: searchHistoryRepo)
+                destinationVC.searchHistoryViewModel = SearchHistoryViewModel(searchHistoryRepo: searchHistoryRepo)
                 destinationVC.homeViewControllerDelegate = self
             }
         }
@@ -72,11 +72,7 @@ class HomeViewController: UIViewController {
                 
                 if (data.errorMessage != "") {
                     let alert = UIAlertController(title: "Error", message: data.errorMessage, preferredStyle: .alert)
-                    //alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: { (_) in
-                        // TODO
-                        //self.homeViewModel.fetchWeatherByCityName(self.homeViewModel.lastCityName!)
-                    //  }))
-                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                    alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                     
                     self.present(alert, animated: true)
                 }
@@ -96,9 +92,9 @@ extension HomeViewController: UISearchBarDelegate {
 }
 
 extension HomeViewController: HomeViewControllerSelectHistoryDelegate {
-    func onSelectSearchHistory(_ cellViewModel: SearchHistoryTableViewCellViewModel) {
+    func onSelectSearchHistory(_ cityId: Int) {
         self.navigationController?.popViewController(animated: true)
         
-        self.homeViewModel.fetchCurrentWeather(cityId: cellViewModel.getCityId())
+        self.homeViewModel.fetchCurrentWeather(cityId: cityId)
     }
 }

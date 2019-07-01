@@ -14,9 +14,9 @@ class SearchHistoryRepository: BaseSQLiteRepository {
     private let tableName = "searchHistories"
     
     // schema
-    private let cityId = Expression<Int>("cityId")
-    private let cityName = Expression<String>("cityName")
-    private let timestamp = Expression<Int>("timestamp")
+    private let fCityId = Expression<Int>("cityId")
+    private let fCityName = Expression<String>("cityName")
+    private let fTimestamp = Expression<Int>("timestamp")
     
     override init() {
         super.init()
@@ -30,18 +30,18 @@ class SearchHistoryRepository: BaseSQLiteRepository {
     }
     
     private func tableCreator(_ t: TableBuilder) {
-        t.column(cityId, primaryKey: true)
-        t.column(cityName)
-        t.column(timestamp)
+        t.column(fCityId, primaryKey: true)
+        t.column(fCityName)
+        t.column(fTimestamp)
     }
     
     func findAll() throws -> Array<SearchHistory> {
         let table = Table(tableName)
         var searchHistories:Array<SearchHistory> = Array()
         
-        if let rows = try super.find(table: table.order(timestamp.desc)) {
+        if let rows = try super.find(table: table.order(fTimestamp.desc)) {
             for row in rows {
-                let searchHistory = SearchHistory(cityId: row[cityId], cityName: row[cityName], timestamp: row[timestamp])
+                let searchHistory = SearchHistory(cityId: row[fCityId], cityName: row[fCityName], timestamp: row[fTimestamp])
                 
                 searchHistories.append(searchHistory)
             }
@@ -53,8 +53,8 @@ class SearchHistoryRepository: BaseSQLiteRepository {
     func findLatest() throws -> SearchHistory? {
         let table = Table(tableName)
         
-        if let row = try super.findOne(table: table.order(timestamp.desc)) {
-            let searchHistory = SearchHistory(cityId: row[cityId], cityName: row[cityName], timestamp: row[timestamp])
+        if let row = try super.findOne(table: table.order(fTimestamp.desc)) {
+            let searchHistory = SearchHistory(cityId: row[fCityId], cityName: row[fCityName], timestamp: row[fTimestamp])
         
             return searchHistory
         }
@@ -65,14 +65,14 @@ class SearchHistoryRepository: BaseSQLiteRepository {
     func insert(_ searchHistory: SearchHistory) throws -> Int64? {
         let table = Table(tableName)
         
-        let insertQuery = table.insert(cityId <- searchHistory.cityId, cityName <- searchHistory.cityName, timestamp <- searchHistory.timestamp)
+        let insertQuery = table.insert(fCityId <- searchHistory.cityId, fCityName <- searchHistory.cityName, fTimestamp <- searchHistory.timestamp)
         
         return try super.insert(insertQuery)
     }
     
-    func delete(_ searchHistory: SearchHistory) throws -> Int? {
+    func deleteByCityId(_ cityId: Int) throws -> Int? {
         let table = Table(tableName)
-        let filteredTable = table.filter(cityId == searchHistory.cityId)
+        let filteredTable = table.filter(fCityId == cityId)
         
         return try super.delete(table: filteredTable)            
     }

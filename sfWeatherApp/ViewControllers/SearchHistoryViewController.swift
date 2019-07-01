@@ -12,7 +12,7 @@ class SearchHistoryViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var historyViewModel:SearchHistoryViewModel?
+    var searchHistoryViewModel:SearchHistoryViewModel?
     var homeViewControllerDelegate: HomeViewControllerSelectHistoryDelegate?
  
     override func viewDidLoad() {
@@ -25,7 +25,7 @@ class SearchHistoryViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.historyViewModel?.fetchAllSearchHistories();
+        self.searchHistoryViewModel?.fetchAllSearchHistories();
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -38,7 +38,7 @@ class SearchHistoryViewController: UIViewController {
     }
     
     private func setupBinding() {
-        historyViewModel?.data.bind { data in
+        searchHistoryViewModel?.data.bind { data in
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -46,13 +46,15 @@ class SearchHistoryViewController: UIViewController {
     }
 }
 
+// MARK: TableView methods
+
 extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let cellViewModel = historyViewModel?.data.value.cellViewModels {
+        if let cellViewModel = searchHistoryViewModel?.data.value.cellViewModels {
             return cellViewModel.count
         }
         
@@ -60,7 +62,7 @@ extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellViewModel = (historyViewModel?.data.value.cellViewModels[indexPath.row])!;
+        let cellViewModel = (searchHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
         
         var cell = tableView.dequeueReusableCell(withIdentifier: "SearchHistoryCell")
         
@@ -75,8 +77,17 @@ extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cellViewModel = (historyViewModel?.data.value.cellViewModels[indexPath.row])!;
+        let cellViewModel = (searchHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
 
-        self.homeViewControllerDelegate?.onSelectSearchHistory(cellViewModel)
+        self.homeViewControllerDelegate?.onSelectSearchHistory(cellViewModel.getCityId())
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let cellViewModel = (searchHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
+
+        if editingStyle == .delete {
+            self.searchHistoryViewModel?.removeSearchHistory(cityId: cellViewModel.getCityId())
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
     }
 }

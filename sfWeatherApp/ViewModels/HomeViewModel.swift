@@ -134,11 +134,9 @@ extension HomeViewModel {
             
             switch error {
             case OWServiceError.clientError(let errorResponse):
-                //strongSelf.errorMessage.value = errorResponse.message
                 errorMessage = errorResponse.message
                 break
             default:
-                //strongSelf.errorMessage.value = "Unknown error"
                 errorMessage = "Unknown error"
                 break
             }
@@ -155,7 +153,7 @@ extension HomeViewModel {
         let searchHistory = SearchHistory(cityId: weatherResult.id, cityName: weatherResult.name, timestamp: Date().currentTimestamp())
         
         do {
-            _ = try self.searchHistoryRepo.delete(searchHistory)
+            _ = try self.searchHistoryRepo.deleteByCityId(searchHistory.cityId)
             _ = try self.searchHistoryRepo.insert(searchHistory)
         } catch {
             print("WeatherHomeViewModel - insertSearchHistory - error")
