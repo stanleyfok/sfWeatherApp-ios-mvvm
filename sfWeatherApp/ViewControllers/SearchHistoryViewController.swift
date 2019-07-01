@@ -35,7 +35,6 @@ class SearchHistoryViewController: UIViewController {
     private func setupViews() {
         tableView.delegate = self
         tableView.dataSource = self
-        //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SearchHistoryCell")
     }
     
     private func setupBinding() {
@@ -69,8 +68,8 @@ extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSourc
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: "SearchHistoryCell")
         }
         
-        cell?.textLabel?.text = cellViewModel.cityName
-        cell?.detailTextLabel?.text = cellViewModel.getFormattedSearchDate()
+        cell?.textLabel?.text = cellViewModel.getCityName()
+        cell?.detailTextLabel?.text = cellViewModel.getSearchDate()
         
         return cell!
     }

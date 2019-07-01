@@ -9,12 +9,18 @@
 import Foundation
 
 struct SearchHistoryTableViewCellViewModel {
-    var cityId: Int
-    var cityName: String
-    var timestamp: Int
+    var searchHistory:SearchHistory
     
-    func getFormattedSearchDate() -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(self.timestamp))
+    func getCityId() -> Int {
+        return searchHistory.cityId
+    }
+    
+    func getCityName() -> String {
+        return searchHistory.cityName
+    }
+    
+    func getSearchDate() -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(searchHistory.timestamp))
         let dateFormatter = DateFormatter()
         //dateFormatter.timeZone = TimeZone(abbreviation: "GMT") //Set timezone that you want
         dateFormatter.locale = NSLocale.current

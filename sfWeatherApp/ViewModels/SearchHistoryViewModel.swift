@@ -26,10 +26,10 @@ struct SearchHistoryViewModel {
             let searchHistories:Array<SearchHistory> = try self.searchHistoryRepo.findAll()
             
             self.data.value = {
-                var cellViewModels = Array<SearchHistoryTableViewCellViewModel>()
+                var cellViewModels:Array<SearchHistoryTableViewCellViewModel> = Array()
                 
                 for searchHistory in searchHistories {
-                    let cellViewModel = SearchHistoryTableViewCellViewModel(cityId: searchHistory.cityId, cityName: searchHistory.cityName, timestamp: searchHistory.timestamp)
+                    let cellViewModel = SearchHistoryTableViewCellViewModel(searchHistory: searchHistory)
                     
                     cellViewModels.append(cellViewModel)
                 }

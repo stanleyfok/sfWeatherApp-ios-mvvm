@@ -60,9 +60,9 @@ class HomeViewController: UIViewController {
     private func setupBinding() {
         homeViewModel.data.bind { data in
             DispatchQueue.main.async {
-                self.cityNameLabel.text = data.cityName
-                self.weatherLabel.text = data.weather
-                self.temperatureLabel.text = data.getFormattedTemperatureText()
+                self.cityNameLabel.text = data.getCityNameText()
+                self.weatherLabel.text = data.getWeatherText()
+                self.temperatureLabel.text = data.getTemperatureText()
                 
                 if (data.isLoading) {
                     self.activityIndicator.startAnimating()
@@ -87,8 +87,7 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let fetchType:OWFetchCurrentWeatherType = .byCityName(cityName: searchBar.text!)
-        self.homeViewModel.fetchCurrentWeather(fetchType)
+        self.homeViewModel.fetchCurrentWeather(cityName: searchBar.text!)
         
         searchBar.endEditing(true)
         
@@ -100,7 +99,6 @@ extension HomeViewController: HomeViewControllerSelectHistoryDelegate {
     func onSelectSearchHistory(_ cellViewModel: SearchHistoryTableViewCellViewModel) {
         self.navigationController?.popViewController(animated: true)
         
-        let fetchType:OWFetchCurrentWeatherType = .byCityId(cityId: cellViewModel.cityId)
-        self.homeViewModel.fetchCurrentWeather(fetchType)
+        self.homeViewModel.fetchCurrentWeather(cityId: cellViewModel.getCityId())
     }
 }

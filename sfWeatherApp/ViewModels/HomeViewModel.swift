@@ -9,41 +9,48 @@
 import Foundation
 
 struct HomeViewModelData {
-    var cityName:String
-    var weather:String
-    var temperature:Float
-    var errorMessage:String
-    var isLoading:Bool
-    
-    init() {
-        cityName = "--"
-        weather = "--"
-        temperature = Float.nan
-        errorMessage = ""
-        isLoading = false
-    }
-    
+    var weatherResult:OWWeatherResult?
+    var errorMessage:String = ""
+    var isLoading:Bool = false
+
     mutating func update(weatherResult: OWWeatherResult, isLoading: Bool) {
-        cityName = weatherResult.name
-        weather = weatherResult.weather[0].main // danger code...
-        temperature = weatherResult.main.temp
-        
+        self.weatherResult = weatherResult
         self.isLoading = isLoading
     }
-    
+
     mutating func update(isLoading: Bool, errorMessage: String) {
         self.isLoading = isLoading
         self.errorMessage = errorMessage
     }
     
-    func getFormattedTemperatureText() -> String {
-        if (temperature.isNaN) {
-            return "--°"
+    func getCityNameText() -> String {
+        if let cityName = weatherResult?.name {
+            return cityName
         }
         
-        let mTemp = (temperature - 273.15);
+        return "--"
+    }
+    
+    func getWeatherText() -> String {
+        if let weather = weatherResult?.weather[0].main  {
+            return weather
+        }
         
-        return "\(String(format: "%.1f", mTemp))°";
+        return "--"
+    }
+
+    func getTemperatureText() -> String {
+        if let temperature = weatherResult?.main.temp {
+            if (temperature.isNaN) {
+                return "--°"
+            }
+
+            let mTemp = (temperature - 273.15);
+
+            return "\(String(format: "%.1f", mTemp))°";
+        }
+        
+        return "--°"
     }
 }
 
@@ -59,12 +66,16 @@ class HomeViewModel {
         
         data = Dynamic(HomeViewModelData())
     }
-    
+}
+
+
+// MARK: current weather fetching
+
+extension HomeViewModel {
     func fetchDefaultWeather() {
         do {
             if let searchHistory = try searchHistoryRepo.findLatest() {
-                let fetchType:OWFetchCurrentWeatherType = .byCityId(cityId: searchHistory.cityId)
-                self.fetchCurrentWeather(fetchType)
+                self.fetchCurrentWeather(cityId: searchHistory.cityId);
             }
         } catch {
             print("WeatherHomeViewModel - fetchDefaultWeather - error")
@@ -72,26 +83,52 @@ class HomeViewModel {
         }
     }
     
-    func fetchCurrentWeather(_ fetchType: OWFetchCurrentWeatherType) {
-        print("WeatherHomeViewModel - fetchWeather")
+    func fetchCurrentWeather(cityId: Int) {
+        print("WeatherHomeViewModel - fetchCurrentWeather - start")
         
         self.data.value.update(isLoading: true, errorMessage: "")
         
         // to do error handling
-        owService.fetchCurrentWeather(fetchType: fetchType, success: {  [weak self] weatherResult in
+        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCityId(cityId: cityId), success: fetchCurrentWeatherSuccessHandler(), failure: fetchCurrentWeatherFailureHandler())
+    }
+    
+    func fetchCurrentWeather(cityName: String) {
+        print("WeatherHomeViewModel - fetchCurrentWeather - start")
+        
+        self.data.value.update(isLoading: true, errorMessage: "")
+        
+        // to do error handling
+        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCityName(cityName: cityName), success: fetchCurrentWeatherSuccessHandler(), failure: fetchCurrentWeatherFailureHandler())
+    }
+    
+    func fetchCurrentWeather(lat: Float, lon:Float) {
+        print("WeatherHomeViewModel - fetchCurrentWeather - start")
+        
+        self.data.value.update(isLoading: true, errorMessage: "")
+        
+        // to do error handling
+        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCoordinates(lat: lat, lon: lon), success: fetchCurrentWeatherSuccessHandler(), failure: fetchCurrentWeatherFailureHandler())
+    }
+    
+    private func fetchCurrentWeatherSuccessHandler() -> (OWWeatherResult) -> Void {
+        return {  [weak self] weatherResult in
             guard let strongSelf = self else { return }
-
-            print("WeatherHomeViewModel - fetchWeather - success")
+            
+            print("WeatherHomeViewModel - fetchCurrentWeather - success")
             
             // update data
             strongSelf.data.value.update(weatherResult: weatherResult, isLoading: false)
             
             // insert search history
             strongSelf.insertSearchHistory(weatherResult: weatherResult)
-        }, failure: { [weak self] error in
+        }
+    }
+    
+    private func fetchCurrentWeatherFailureHandler() -> (Error) -> Void {
+        return { [weak self] error in
             guard let strongSelf = self else { return }
-
-            print("WeatherHomeViewModel - fetchWeather - error")
+            
+            print("WeatherHomeViewModel - fetchCurrentWeather - error")
             
             var errorMessage:String;
             
@@ -107,9 +144,13 @@ class HomeViewModel {
             }
             
             strongSelf.data.value.update(isLoading: false, errorMessage: errorMessage)
-        })
+        }
     }
-    
+}
+
+// MARK: search history handling
+
+extension HomeViewModel {
     private func insertSearchHistory(weatherResult: OWWeatherResult) {
         let searchHistory = SearchHistory(cityId: weatherResult.id, cityName: weatherResult.name, timestamp: Date().currentTimestamp())
         
