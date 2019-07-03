@@ -1,3 +1,3 @@
 # sfWeatherApp-ios-mvvm
 
-A description of this package.
+A simple iOS weather app using [Openweather API](https://openweathermap.org/api) using mvvm architecture

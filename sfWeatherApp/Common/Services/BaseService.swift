@@ -40,17 +40,20 @@ class BaseService {
             // check for status code
             if let httpResponse = response as? HTTPURLResponse {
                 let statusCode = httpResponse.statusCode
-                if ((statusCode >= 400) && (statusCode <= 499)) {
+                
+                switch httpResponse.statusCode {
+                case 400...499:
                     completion(.failure(error: BaseServiceError.clientError(statusCode: statusCode, data: data!, response: response!)))
                     
                     return
+                case 500...599:
+                    completion(.failure(error: BaseServiceError.serverError(statusCode: statusCode, data: data!, response: response!)))
+                
+                    return
+                default:
+                    break
                 }
                 
-                if ((statusCode >= 500) && (statusCode <= 599)) {
-                    completion(.failure(error: BaseServiceError.serverError(statusCode: statusCode, data: data!, response: response!)))
-                    
-                    return
-                }
             }
             
             completion(.success(data: data!, response: response!))
