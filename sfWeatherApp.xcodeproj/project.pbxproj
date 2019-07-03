@@ -138,10 +138,10 @@
 		9FA98F1C22C724EF00985200 /* sfWeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				9FCA45A022CC8C5B00CF71C9 /* Common */,
 				9FA98F2922C724F100985200 /* Info.plist */,
 				9FA98F1D22C724EF00985200 /* AppDelegate.swift */,
 				9FA98F2422C724F100985200 /* Assets.xcassets */,
-				9FCA459C22CA922C00CF71C9 /* Common */,
 				9FCA459922CA91DF00CF71C9 /* Features */,
 				9FA98F2622C724F100985200 /* LaunchScreen.storyboard */,
 				9FA98F2122C724EF00985200 /* Main.storyboard */,
@@ -230,19 +230,6 @@
 			path = SearchHistory;
 			sourceTree = "<group>";
 		};
-		9FCA459C22CA922C00CF71C9 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				9FA98F6022C7E94200985200 /* Extensions */,
-				9FA98F5522C7506200985200 /* Models */,
-				9FF1FE5D22C88DDD000A517E /* Repositories */,
-				9FA98F5B22C76A1D00985200 /* Services */,
-				9FA98F5A22C7654700985200 /* Utils */,
-			);
-			name = Common;
-			path = ..;
-			sourceTree = "<group>";
-		};
 		9FCA459D22CA927A00CF71C9 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -257,6 +244,18 @@
 				9FA98F5C22C76B2800985200 /* OWService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		9FCA45A022CC8C5B00CF71C9 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				9FA98F6022C7E94200985200 /* Extensions */,
+				9FA98F5522C7506200985200 /* Models */,
+				9FF1FE5D22C88DDD000A517E /* Repositories */,
+				9FA98F5B22C76A1D00985200 /* Services */,
+				9FA98F5A22C7654700985200 /* Utils */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 		9FF1FE5D22C88DDD000A517E /* Repositories */ = {
