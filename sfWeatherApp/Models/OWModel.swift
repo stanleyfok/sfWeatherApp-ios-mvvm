@@ -9,22 +9,22 @@
 
 import Foundation
 
-struct OWErrorResult: Codable {
+struct OWErrorResult: Decodable {
     var code:String
     var message:String
     
     enum CodingKeys: String, CodingKey {
         case code = "cod" // rename
-        case message = "message"
+        case message
     }
 }
 
-struct OWWeatherResult: Codable {
+struct OWWeatherResult: Decodable {
     var id: Int
-    var name: String
+    var cityName: String
     var timezone: Int
     var base: String
-    var visibility: Int
+    var visibility: Int?
     var dt: Int
     
     var coord: OWCoord
@@ -34,19 +34,34 @@ struct OWWeatherResult: Codable {
     var clouds: OWClouds
     var sys: OWSys
     
-    struct OWCoord: Codable {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case cityName = "name" // rename
+        case timezone
+        case base
+        case visibility
+        case dt
+        case coord
+        case weather
+        case main
+        case wind
+        case clouds
+        case sys
+    }
+    
+    struct OWCoord: Decodable {
         var lon: Float
         var lat: Float
     }
     
-    struct OWWeather: Codable {
+    struct OWWeather: Decodable {
         var id: Int
         var main: String
         var description: String
         var icon: String
     }
     
-    struct OWMain: Codable {
+    struct OWMain: Decodable {
         var temp: Float
         var pressure: Float
         var humidity: Float
@@ -54,24 +69,24 @@ struct OWWeatherResult: Codable {
         var tempMax: Float
         
         enum CodingKeys: String, CodingKey {
-            case temp = "temp"
-            case pressure = "pressure"
-            case humidity = "humidity"
+            case temp
+            case pressure
+            case humidity
             case tempMin = "temp_min" // use cammal's rule
             case tempMax = "temp_max" // use cammal's rule
         }
     }
     
-    struct OWWind: Codable {
+    struct OWWind: Decodable {
         var speed: Float
         var deg: Float
     }
     
-    struct OWClouds: Codable {
+    struct OWClouds: Decodable {
         var all: Float
     }
     
-    struct OWSys: Codable {
+    struct OWSys: Decodable {
         var type: Int
         var id: Int
         var message: Float

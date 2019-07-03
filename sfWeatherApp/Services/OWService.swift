@@ -73,7 +73,8 @@ extension OWService {
                         let result = try JSONDecoder().decode(type, from: data)
                         
                         completionHandler(.success(result))
-                    } catch {
+                    } catch let decodeErr{
+                        print(decodeErr)
                         completionHandler(.failure(.decodingError))
                     }
                     break

@@ -24,7 +24,7 @@ struct HomeViewModelData {
     }
     
     func getCityNameText() -> String {
-        if let cityName = weatherResult?.name {
+        if let cityName = weatherResult?.cityName {
             return cityName
         }
         
@@ -152,7 +152,7 @@ extension HomeViewModel {
 
 extension HomeViewModel {
     private func insertSearchHistory(weatherResult: OWWeatherResult) {
-        let searchHistory = SearchHistory(cityId: weatherResult.id, cityName: weatherResult.name, timestamp: Date().currentTimestamp())
+        let searchHistory = SearchHistory(cityId: weatherResult.id, cityName: weatherResult.cityName, timestamp: Date().currentTimestamp())
         
         do {
             _ = try self.searchHistoryRepo.deleteByCityId(searchHistory.cityId)
