@@ -58,7 +58,7 @@ class HomeViewController: UIViewController {
     }
     
     private func setupBinding() {
-        homeViewModel.data.bind { data in
+        homeViewModel.data.bindAndFire { data in
             DispatchQueue.main.async {
                 self.cityNameLabel.text = data.getCityNameText()
                 self.weatherLabel.text = data.getWeatherText()

@@ -11,6 +11,7 @@ import UIKit
 class SearchHistoryViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var editNavButton: UIBarButtonItem!
     
     var searchHistoryViewModel:SearchHistoryViewModel?
     var homeViewControllerDelegate: HomeViewControllerSelectHistoryDelegate?
@@ -46,6 +47,20 @@ class SearchHistoryViewController: UIViewController {
     }
 }
 
+// MARK: BarButtonItem
+
+extension SearchHistoryViewController {
+    @IBAction func onEditBarButtonTapped(_ sender: Any) {
+        if (self.tableView.isEditing == true) {
+            tableView.setEditing(false, animated: true)
+            self.navigationItem.rightBarButtonItem?.title = "Edit"
+        } else {
+            tableView.setEditing(true, animated: true)
+            self.navigationItem.rightBarButtonItem?.title = "Done"
+        }
+    }
+}
+
 // MARK: TableView methods
 
 extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSource {
@@ -72,6 +87,7 @@ extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSourc
         
         cell?.textLabel?.text = cellViewModel.getCityName()
         cell?.detailTextLabel?.text = cellViewModel.getSearchDate()
+        cell?.accessoryType = .disclosureIndicator
         
         return cell!
     }

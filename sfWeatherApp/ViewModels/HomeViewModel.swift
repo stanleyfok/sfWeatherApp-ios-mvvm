@@ -89,7 +89,7 @@ extension HomeViewModel {
         self.data.value.update(isLoading: true, errorMessage: "")
         
         // to do error handling
-        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCityId(cityId: cityId), success: fetchCurrentWeatherSuccessHandler(), failure: fetchCurrentWeatherFailureHandler())
+        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCityId(cityId: cityId), completionHandler: fetchCurrentWeatherCompletionHandler())
     }
     
     func fetchCurrentWeather(cityName: String) {
@@ -98,7 +98,7 @@ extension HomeViewModel {
         self.data.value.update(isLoading: true, errorMessage: "")
         
         // to do error handling
-        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCityName(cityName: cityName), success: fetchCurrentWeatherSuccessHandler(), failure: fetchCurrentWeatherFailureHandler())
+        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCityName(cityName: cityName), completionHandler: fetchCurrentWeatherCompletionHandler())
     }
     
     func fetchCurrentWeather(lat: Float, lon:Float) {
@@ -107,41 +107,43 @@ extension HomeViewModel {
         self.data.value.update(isLoading: true, errorMessage: "")
         
         // to do error handling
-        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCoordinates(lat: lat, lon: lon), success: fetchCurrentWeatherSuccessHandler(), failure: fetchCurrentWeatherFailureHandler())
+        owService.fetchCurrentWeather(fetchType: OWFetchCurrentWeatherType.byCoordinates(lat: lat, lon: lon), completionHandler: fetchCurrentWeatherCompletionHandler())
     }
     
-    private func fetchCurrentWeatherSuccessHandler() -> (OWWeatherResult) -> Void {
-        return {  [weak self] weatherResult in
+    private func fetchCurrentWeatherCompletionHandler() -> (OWServiceResponse) -> Void {
+        return {  [weak self] response in
             guard let strongSelf = self else { return }
             
-            print("WeatherHomeViewModel - fetchCurrentWeather - success")
+            print("WeatherHomeViewModel - fetchCurrentWeatherCompletionHandler")
             
-            // update data
-            strongSelf.data.value.update(weatherResult: weatherResult, isLoading: false)
-            
-            // insert search history
-            strongSelf.insertSearchHistory(weatherResult: weatherResult)
-        }
-    }
-    
-    private func fetchCurrentWeatherFailureHandler() -> (Error) -> Void {
-        return { [weak self] error in
-            guard let strongSelf = self else { return }
-            
-            print("WeatherHomeViewModel - fetchCurrentWeather - error")
-            
-            var errorMessage:String;
-            
-            switch error {
-            case OWServiceError.clientError(let errorResponse):
-                errorMessage = errorResponse.message
+            switch response {
+            case .success(let weatherResult):
+                // update data
+                strongSelf.data.value.update(weatherResult: weatherResult as! OWWeatherResult, isLoading: false)
+                
+                // insert search history
+                strongSelf.insertSearchHistory(weatherResult: weatherResult as! OWWeatherResult)
+                
                 break
-            default:
-                errorMessage = "Unknown error"
-                break
+            case .failure(let error):
+                var errorMessage:String;
+                
+                switch error {
+                case OWServiceError.generalError(let errorResult):
+                    errorMessage = errorResult.message
+                    break
+                case OWServiceError.decodingError:
+                    errorMessage = "Decode error"
+                    break
+                default:
+                    errorMessage = "Unknown error"
+                    break
+                }
+                
+                strongSelf.data.value.update(isLoading: false, errorMessage: errorMessage)
             }
             
-            strongSelf.data.value.update(isLoading: false, errorMessage: errorMessage)
+            
         }
     }
 }

@@ -63,7 +63,7 @@
 		9FA98F3D22C724F100985200 /* sfWeatherAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sfWeatherAppUITests.swift; sourceTree = "<group>"; };
 		9FA98F3F22C724F100985200 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9FA98F4C22C7476B00985200 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		9FA98F5222C74DAE00985200 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeViewController.swift; path = sfWeatherApp/Features/Home/HomeViewController.swift; sourceTree = SOURCE_ROOT; };
+		9FA98F5222C74DAE00985200 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeViewController.swift; path = sfWeatherApp/ViewControllers/HomeViewController.swift; sourceTree = SOURCE_ROOT; };
 		9FA98F5622C7507700985200 /* OWModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OWModel.swift; sourceTree = "<group>"; };
 		9FA98F5822C760C100985200 /* Dynamic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dynamic.swift; sourceTree = "<group>"; };
 		9FA98F5C22C76B2800985200 /* OWService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OWService.swift; sourceTree = "<group>"; };
@@ -138,11 +138,16 @@
 		9FA98F1C22C724EF00985200 /* sfWeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				9FA98F6022C7E94200985200 /* Extensions */,
+				9FA98F5B22C76A1D00985200 /* Services */,
+				9FF1FE5D22C88DDD000A517E /* Repositories */,
+				9FA98F5A22C7654700985200 /* Utils */,
+				9FA98F5522C7506200985200 /* Models */,
+				9FCA45A122CCF80E00CF71C9 /* ViewControllers */,
+				9FCA45A222CCF81900CF71C9 /* ViewModels */,
 				9FA98F2922C724F100985200 /* Info.plist */,
 				9FA98F1D22C724EF00985200 /* AppDelegate.swift */,
 				9FA98F2422C724F100985200 /* Assets.xcassets */,
-				9FCA45A022CC8C5B00CF71C9 /* Common */,
-				9FCA459922CA91DF00CF71C9 /* Features */,
 				9FA98F2622C724F100985200 /* LaunchScreen.storyboard */,
 				9FA98F2122C724EF00985200 /* Main.storyboard */,
 			);
@@ -170,6 +175,7 @@
 		9FA98F5522C7506200985200 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				9FA98F5622C7507700985200 /* OWModel.swift */,
 				9FF1FE6422C8C834000A517E /* SearchHistoryModel.swift */,
 			);
 			path = Models;
@@ -187,6 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				9FA98F5E22C7B50600985200 /* BaseService.swift */,
+				9FA98F5C22C76B2800985200 /* OWService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -200,62 +207,23 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		9FCA459922CA91DF00CF71C9 /* Features */ = {
+		9FCA45A122CCF80E00CF71C9 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				9FCA459A22CA91EB00CF71C9 /* Home */,
-				9FCA459B22CA91F600CF71C9 /* SearchHistory */,
-			);
-			path = Features;
-			sourceTree = "<group>";
-		};
-		9FCA459A22CA91EB00CF71C9 /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				9FCA459F22CA932200CF71C9 /* Services */,
-				9FCA459D22CA927A00CF71C9 /* Models */,
 				9FA98F5222C74DAE00985200 /* HomeViewController.swift */,
-				9FA98F4C22C7476B00985200 /* HomeViewModel.swift */,
+				9FA98F6322C8138A00985200 /* SearchHistoryViewController.swift */,
 			);
-			path = Home;
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
-		9FCA459B22CA91F600CF71C9 /* SearchHistory */ = {
+		9FCA45A222CCF81900CF71C9 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				9FA98F6322C8138A00985200 /* SearchHistoryViewController.swift */,
+				9FA98F4C22C7476B00985200 /* HomeViewModel.swift */,
 				9FF1FE6622C8F9D4000A517E /* SearchHistoryViewModel.swift */,
 				9FF1FE6C22C9171C000A517E /* SearchHistoryTableViewCellViewModel.swift */,
 			);
-			path = SearchHistory;
-			sourceTree = "<group>";
-		};
-		9FCA459D22CA927A00CF71C9 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				9FA98F5622C7507700985200 /* OWModel.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		9FCA459F22CA932200CF71C9 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				9FA98F5C22C76B2800985200 /* OWService.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		9FCA45A022CC8C5B00CF71C9 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				9FA98F6022C7E94200985200 /* Extensions */,
-				9FA98F5522C7506200985200 /* Models */,
-				9FF1FE5D22C88DDD000A517E /* Repositories */,
-				9FA98F5B22C76A1D00985200 /* Services */,
-				9FA98F5A22C7654700985200 /* Utils */,
-			);
-			path = Common;
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		9FF1FE5D22C88DDD000A517E /* Repositories */ = {

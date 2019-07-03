@@ -9,14 +9,15 @@
 import Foundation
 
 enum BaseServiceResponse {
-    case success(data: Data, response: URLResponse)
-    case failure(error: Error)
+    case success(_ data: Data, _ response: URLResponse)
+    case failure(_ error: Error)
 }
 
 enum BaseServiceError: Error {
-    case clientError(statusCode: Int, data: Data, response: URLResponse)
-    case serverError(statusCode: Int, data: Data, response: URLResponse)
+    case clientError(_ statusCode: Int, _ data: Data, _ response: URLResponse)
+    case serverError(_ statusCode: Int, _ data: Data, _ response: URLResponse)
     case noDataError
+    case unknownError
 }
 
 class BaseService {
@@ -25,14 +26,14 @@ class BaseService {
             
             // check for error
             guard error == nil else {
-                completion(.failure(error: error!))
+                completion(.failure(error!))
                 
                 return
             }
             
             // check for data available
             guard data != nil else {
-                completion(.failure(error: BaseServiceError.noDataError))
+                completion(.failure(BaseServiceError.noDataError))
                 
                 return
             }
@@ -42,21 +43,22 @@ class BaseService {
                 let statusCode = httpResponse.statusCode
                 
                 switch httpResponse.statusCode {
+                case 200...299:
+                    completion(.success(data!, response!))
+
+                    break
                 case 400...499:
-                    completion(.failure(error: BaseServiceError.clientError(statusCode: statusCode, data: data!, response: response!)))
-                    
-                    return
+                    completion(.failure(BaseServiceError.clientError(statusCode, data!, response!)))
+                    break
                 case 500...599:
-                    completion(.failure(error: BaseServiceError.serverError(statusCode: statusCode, data: data!, response: response!)))
-                
-                    return
+                    completion(.failure(BaseServiceError.serverError(statusCode, data!, response!)))
+                    break
                 default:
+                    completion(.failure(BaseServiceError.unknownError))
                     break
                 }
-                
             }
             
-            completion(.success(data: data!, response: response!))
         })
         
         task.resume()

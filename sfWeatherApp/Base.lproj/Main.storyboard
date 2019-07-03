@@ -138,8 +138,15 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VbJ-Ip-zhp"/>
                     </view>
-                    <navigationItem key="navigationItem" title="History" largeTitleDisplayMode="never" id="eRb-8B-jaX"/>
+                    <navigationItem key="navigationItem" title="History" largeTitleDisplayMode="never" id="eRb-8B-jaX">
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="XiQ-2C-Aqd">
+                            <connections>
+                                <action selector="onEditBarButtonTapped:" destination="ZGg-Iw-4Ii" id="IYO-xS-CtC"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="editNavButton" destination="XiQ-2C-Aqd" id="aFD-N7-ztD"/>
                         <outlet property="tableView" destination="NcS-tQ-pVj" id="FUq-Wr-v4z"/>
                     </connections>
                 </viewController>
