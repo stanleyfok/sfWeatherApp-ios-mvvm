@@ -88,29 +88,12 @@
                     <connections>
                         <outlet property="activityIndicator" destination="KeU-qo-dcB" id="L7j-qV-4al"/>
                         <outlet property="cityNameLabel" destination="weO-Bb-ttK" id="Mmf-Nz-H7T"/>
-                        <outlet property="searchDisplayController" destination="aeH-EE-ZLF" id="FYs-SY-fgo"/>
                         <outlet property="temperatureLabel" destination="hZf-g6-epF" id="gPQ-0d-S89"/>
                         <outlet property="viewHistoryButton" destination="h3n-Nl-Zfn" id="WwN-uM-RcT"/>
                         <outlet property="weatherLabel" destination="xGj-eJ-LIM" id="4ih-KR-k4h"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <searchDisplayController id="LzS-n2-TRS">
-                    <connections>
-                        <outlet property="delegate" destination="BYZ-38-t0r" id="YLd-5e-BVd"/>
-                        <outlet property="searchContentsController" destination="BYZ-38-t0r" id="tUX-qM-eG8"/>
-                        <outlet property="searchResultsDataSource" destination="BYZ-38-t0r" id="nQp-Q8-iHK"/>
-                        <outlet property="searchResultsDelegate" destination="BYZ-38-t0r" id="e8c-jR-aiE"/>
-                    </connections>
-                </searchDisplayController>
-                <searchDisplayController id="aeH-EE-ZLF">
-                    <connections>
-                        <outlet property="delegate" destination="BYZ-38-t0r" id="x9l-jI-1y6"/>
-                        <outlet property="searchContentsController" destination="BYZ-38-t0r" id="Zj1-ha-1g2"/>
-                        <outlet property="searchResultsDataSource" destination="BYZ-38-t0r" id="HV9-AB-bp5"/>
-                        <outlet property="searchResultsDelegate" destination="BYZ-38-t0r" id="7HH-QR-Fzq"/>
-                    </connections>
-                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="944.92753623188412" y="18.75"/>
         </scene>
