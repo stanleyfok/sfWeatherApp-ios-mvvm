@@ -9,7 +9,7 @@
 import Foundation
 import SQLite
 
-class SearchHistoryRepository: BaseSQLiteRepository {
+class SearchHistoryDAO: BaseSQLiteDAO {
     private let dbName = "sfWeather.sqlite3"
     private let tableName = "searchHistories"
     

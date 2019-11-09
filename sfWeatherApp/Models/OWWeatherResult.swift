@@ -9,16 +9,6 @@
 
 import Foundation
 
-struct OWErrorResult: Decodable {
-    var code:String
-    var message:String
-    
-    enum CodingKeys: String, CodingKey {
-        case code = "cod" // rename
-        case message
-    }
-}
-
 struct OWWeatherResult: Decodable {
     var id: Int
     var cityName: String
@@ -89,7 +79,6 @@ struct OWWeatherResult: Decodable {
     struct OWSys: Decodable {
         var type: Int
         var id: Int
-        var message: Float
         var country: String
         var sunrise: Int
         var sunset: Int

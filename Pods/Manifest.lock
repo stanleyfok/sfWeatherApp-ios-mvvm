@@ -7,7 +7,7 @@ DEPENDENCIES:
   - SQLite.swift (~> 0.12.0)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - SQLite.swift
 
 SPEC CHECKSUMS:
@@ -15,4 +15,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 0d701fd526bbf6299a660006b07159e7987c564e
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.4

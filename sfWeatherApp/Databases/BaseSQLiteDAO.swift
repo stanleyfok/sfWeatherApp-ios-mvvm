@@ -9,7 +9,7 @@
 import Foundation
 import SQLite
 
-class BaseSQLiteRepository {
+class BaseSQLiteDAO {
     var db:Connection?
     
     func connect(dbName:String) throws {

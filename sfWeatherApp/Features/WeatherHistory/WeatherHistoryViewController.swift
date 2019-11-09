@@ -8,13 +8,13 @@
 
 import UIKit
 
-class SearchHistoryViewController: UIViewController {
+class WeatherHistoryViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var editNavButton: UIBarButtonItem!
     
-    var searchHistoryViewModel:SearchHistoryViewModel?
-    var homeViewControllerDelegate: HomeViewControllerSelectHistoryDelegate?
+    var weatherHistoryViewModel:WeatherHistoryViewModel?
+    var weatherDetailsViewControllerDelegate: WeatherDetailsViewControllerSelectHistoryDelegate?
  
     override func viewDidLoad() {
         super .viewDidLoad()
@@ -26,7 +26,7 @@ class SearchHistoryViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.searchHistoryViewModel?.fetchAllSearchHistories();
+        self.weatherHistoryViewModel?.fetchAllSearchHistories();
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -39,7 +39,7 @@ class SearchHistoryViewController: UIViewController {
     }
     
     private func setupBinding() {
-        searchHistoryViewModel?.data.bind { data in
+        weatherHistoryViewModel?.data.bind { data in
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -49,7 +49,7 @@ class SearchHistoryViewController: UIViewController {
 
 // MARK: BarButtonItem
 
-extension SearchHistoryViewController {
+extension WeatherHistoryViewController {
     @IBAction func onEditBarButtonTapped(_ sender: Any) {
         if (self.tableView.isEditing == true) {
             tableView.setEditing(false, animated: true)
@@ -63,13 +63,13 @@ extension SearchHistoryViewController {
 
 // MARK: TableView methods
 
-extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSource {
+extension WeatherHistoryViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let cellViewModel = searchHistoryViewModel?.data.value.cellViewModels {
+        if let cellViewModel = weatherHistoryViewModel?.data.value.cellViewModels {
             return cellViewModel.count
         }
         
@@ -77,12 +77,12 @@ extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellViewModel = (searchHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
+        let cellViewModel = (weatherHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
         
-        var cell = tableView.dequeueReusableCell(withIdentifier: "SearchHistoryCell")
+        var cell = tableView.dequeueReusableCell(withIdentifier: "WeatherHistoryCell")
         
         if (cell == nil) {
-            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "SearchHistoryCell")
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "WeatherHistoryCell")
         }
         
         cell?.textLabel?.text = cellViewModel.getCityName()
@@ -93,16 +93,16 @@ extension SearchHistoryViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cellViewModel = (searchHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
+        let cellViewModel = (weatherHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
 
-        self.homeViewControllerDelegate?.onSelectSearchHistory(cellViewModel.getCityId())
+        self.weatherDetailsViewControllerDelegate?.onSelectWeatherHistory(cellViewModel.getCityId())
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let cellViewModel = (searchHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
+        let cellViewModel = (weatherHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
 
         if editingStyle == .delete {
-            self.searchHistoryViewModel?.removeSearchHistory(cityId: cellViewModel.getCityId())
+            self.weatherHistoryViewModel?.removeSearchHistory(cityId: cellViewModel.getCityId())
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }

@@ -8,11 +8,11 @@
 
 import UIKit
 
-protocol HomeViewControllerSelectHistoryDelegate {
-    func onSelectSearchHistory(_ cityId: Int)
+protocol WeatherDetailsViewControllerSelectHistoryDelegate {
+    func onSelectWeatherHistory(_ cityId: Int)
 }
 
-class HomeViewController: UIViewController {
+class WeatherDetailsViewController: UIViewController {
     
     @IBOutlet weak var cityNameLabel: UILabel!
     @IBOutlet weak var weatherLabel: UILabel!
@@ -23,11 +23,10 @@ class HomeViewController: UIViewController {
     
     var searchController: UISearchController?
     
-    let owService:OWService = OWService()
-    let searchHistoryRepo:SearchHistoryRepository = SearchHistoryRepository()
+    let weatherRepo:WeatherRepository = WeatherRepository()
 
-    lazy var homeViewModel:HomeViewModel = {
-        return HomeViewModel(owService: owService, searchHistoryRepo: searchHistoryRepo)
+    lazy var weatherDetailsViewModel:WeatherDetailsViewModel = {
+        return WeatherDetailsViewModel(weatherRepo: weatherRepo)
     }()
     
     override func viewDidLoad() {
@@ -36,14 +35,14 @@ class HomeViewController: UIViewController {
         setupViews()
         setupBinding()
         
-        homeViewModel.fetchDefaultWeather()
+        weatherDetailsViewModel.fetchDefaultWeather()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowHistorySegue" {
-            if let destinationVC = segue.destination as? SearchHistoryViewController {
-                destinationVC.searchHistoryViewModel = SearchHistoryViewModel(searchHistoryRepo: searchHistoryRepo)
-                destinationVC.homeViewControllerDelegate = self
+            if let destinationVC = segue.destination as? WeatherHistoryViewController {
+                destinationVC.weatherHistoryViewModel = WeatherHistoryViewModel(weatherRepo: weatherRepo)
+                destinationVC.weatherDetailsViewControllerDelegate = self
             }
         }
     }
@@ -52,13 +51,12 @@ class HomeViewController: UIViewController {
         self.hideKeyboardWhenTappedAround()
         
         searchController = UISearchController(searchResultsController: nil)
-        searchController?.dimsBackgroundDuringPresentation = false
         searchController?.searchBar.delegate = self
         navigationItem.searchController = searchController
     }
     
     private func setupBinding() {
-        homeViewModel.data.bindAndFire { data in
+        weatherDetailsViewModel.data.bindAndFire { data in
             DispatchQueue.main.async {
                 self.cityNameLabel.text = data.getCityNameText()
                 self.weatherLabel.text = data.getWeatherText()
@@ -81,9 +79,9 @@ class HomeViewController: UIViewController {
     }
 }
 
-extension HomeViewController: UISearchBarDelegate {
+extension WeatherDetailsViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        self.homeViewModel.fetchCurrentWeather(cityName: searchBar.text!)
+        self.weatherDetailsViewModel.fetchCurrentWeather(cityName: searchBar.text!)
         
         searchBar.endEditing(true)
         
@@ -91,10 +89,10 @@ extension HomeViewController: UISearchBarDelegate {
     }
 }
 
-extension HomeViewController: HomeViewControllerSelectHistoryDelegate {
-    func onSelectSearchHistory(_ cityId: Int) {
+extension WeatherDetailsViewController: WeatherDetailsViewControllerSelectHistoryDelegate {
+    func onSelectWeatherHistory(_ cityId: Int) {
         self.navigationController?.popViewController(animated: true)
         
-        self.homeViewModel.fetchCurrentWeather(cityId: cityId)
+        self.weatherDetailsViewModel.fetchCurrentWeather(cityId: cityId)
     }
 }

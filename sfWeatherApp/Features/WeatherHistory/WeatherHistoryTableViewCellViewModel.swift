@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SearchHistoryTableViewCellViewModel {
+struct WeatherHistoryTableViewCellViewModel {
     var searchHistory:SearchHistory
     
     func getCityId() -> Int {
