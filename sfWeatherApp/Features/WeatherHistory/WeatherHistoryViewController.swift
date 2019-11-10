@@ -80,17 +80,14 @@ extension WeatherHistoryViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellViewModel = weatherHistoryViewModel.cellViewModels.value[indexPath.row];
         
-        var cell = tableView.dequeueReusableCell(withIdentifier: "WeatherHistoryCell")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherHistoryCell") ??
+            UITableViewCell(style: .subtitle, reuseIdentifier: "WeatherHistoryCell")
+                
+        cell.textLabel?.text = cellViewModel.getCityName()
+        cell.detailTextLabel?.text = cellViewModel.getSearchDate()
+        cell.accessoryType = .disclosureIndicator
         
-        if (cell == nil) {
-            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "WeatherHistoryCell")
-        }
-        
-        cell?.textLabel?.text = cellViewModel.getCityName()
-        cell?.detailTextLabel?.text = cellViewModel.getSearchDate()
-        cell?.accessoryType = .disclosureIndicator
-        
-        return cell!
+        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
