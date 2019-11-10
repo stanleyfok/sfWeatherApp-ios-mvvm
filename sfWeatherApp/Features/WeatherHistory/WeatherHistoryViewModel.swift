@@ -8,17 +8,13 @@
 
 import Foundation
 
-struct WeatherHistoryViewModelData {
-    var cellViewModels:Array<WeatherHistoryTableViewCellViewModel>
-}
-
 struct WeatherHistoryViewModel {
     var weatherRepo:WeatherRepository
-    var data:Dynamic<WeatherHistoryViewModelData>
+    var cellViewModels:Dynamic<Array<WeatherHistoryTableViewCellViewModel>>
 
     init(weatherRepo:WeatherRepository) {
         self.weatherRepo = weatherRepo
-        self.data = Dynamic(WeatherHistoryViewModelData(cellViewModels: Array<WeatherHistoryTableViewCellViewModel>()))
+        self.cellViewModels = Dynamic(Array<WeatherHistoryTableViewCellViewModel>())
     }
 }
 
@@ -29,7 +25,7 @@ extension WeatherHistoryViewModel {
         do {
             let searchHistories = try self.weatherRepo.getAllHistories()
             
-            self.data.value = {
+            self.cellViewModels.value = {
                 var cellViewModels = Array<WeatherHistoryTableViewCellViewModel>()
                 
                 for searchHistory in searchHistories {
@@ -38,7 +34,7 @@ extension WeatherHistoryViewModel {
                     cellViewModels.append(cellViewModel)
                 }
                 
-                return WeatherHistoryViewModelData(cellViewModels: cellViewModels)
+                return cellViewModels
             }()
         } catch {
             print("WeatherHistoryViewModel - fetchAllSearchHistory - error")
@@ -50,8 +46,8 @@ extension WeatherHistoryViewModel {
         do {
             if let deletedRows = try self.weatherRepo.deleteHisoryByCityId(cityId) {
                 if (deletedRows >= 1) {
-                    let filteredCellViewModels = self.data.value.cellViewModels.filter({ $0.getCityId() != cityId})
-                    self.data.value = WeatherHistoryViewModelData(cellViewModels: filteredCellViewModels)
+                    let filteredCellViewModels = self.cellViewModels.value.filter({ $0.getCityId() != cityId})
+                    self.cellViewModels.value = filteredCellViewModels
                 }
             }
             

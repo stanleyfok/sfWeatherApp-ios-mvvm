@@ -39,7 +39,7 @@ class WeatherHistoryViewController: UIViewController {
     }
     
     private func setupBinding() {
-        weatherHistoryViewModel?.data.bind { data in
+        weatherHistoryViewModel?.cellViewModels.bind { cellData in
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -69,7 +69,7 @@ extension WeatherHistoryViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let cellViewModel = weatherHistoryViewModel?.data.value.cellViewModels {
+        if let cellViewModel = weatherHistoryViewModel?.cellViewModels.value {
             return cellViewModel.count
         }
         
@@ -77,7 +77,7 @@ extension WeatherHistoryViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellViewModel = (weatherHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
+        let cellViewModel = (weatherHistoryViewModel?.cellViewModels.value[indexPath.row])!;
         
         var cell = tableView.dequeueReusableCell(withIdentifier: "WeatherHistoryCell")
         
@@ -93,13 +93,13 @@ extension WeatherHistoryViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cellViewModel = (weatherHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
+        let cellViewModel = (weatherHistoryViewModel?.cellViewModels.value[indexPath.row])!;
 
         self.weatherDetailsViewControllerDelegate?.onSelectWeatherHistory(cellViewModel.getCityId())
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let cellViewModel = (weatherHistoryViewModel?.data.value.cellViewModels[indexPath.row])!;
+        let cellViewModel = (weatherHistoryViewModel?.cellViewModels.value[indexPath.row])!;
 
         if editingStyle == .delete {
             self.weatherHistoryViewModel?.removeSearchHistory(cityId: cellViewModel.getCityId())

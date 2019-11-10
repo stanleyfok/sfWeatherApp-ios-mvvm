@@ -8,61 +8,14 @@
 
 import Foundation
 
-struct WeatherDetailsViewModelData {
-    var weatherResult:OWWeatherResult?
-    var errorMessage:String = ""
-    var isLoading:Bool = false
-
-    mutating func update(weatherResult: OWWeatherResult, isLoading: Bool) {
-        self.weatherResult = weatherResult
-        self.isLoading = isLoading
-    }
-
-    mutating func update(isLoading: Bool, errorMessage: String) {
-        self.isLoading = isLoading
-        self.errorMessage = errorMessage
-    }
-    
-    func getCityNameText() -> String {
-        if let cityName = weatherResult?.cityName {
-            return cityName
-        }
-        
-        return "--"
-    }
-    
-    func getWeatherText() -> String {
-        if let weather = weatherResult?.weather[0].main  {
-            return weather
-        }
-        
-        return "--"
-    }
-
-    func getTemperatureText() -> String {
-        if let temperature = weatherResult?.main.temp {
-            if (temperature.isNaN) {
-                return "--°"
-            }
-
-            let mTemp = (temperature - 273.15);
-
-            return "\(String(format: "%.1f", mTemp))°";
-        }
-        
-        return "--°"
-    }
-}
-
 class WeatherDetailsViewModel {
     var weatherRepo:WeatherRepository
-    
-    var data:Dynamic<WeatherDetailsViewModelData>
+    var weatherResult:Dynamic<OWWeatherResult?> = Dynamic(nil)
+    var errorMessage:Dynamic<String?> = Dynamic(nil)
+    var isLoading:Dynamic<Bool> = Dynamic(false)
     
     init(weatherRepo: WeatherRepository) {
-        self.weatherRepo = weatherRepo
-        
-        data = Dynamic(WeatherDetailsViewModelData())
+        self.weatherRepo = weatherRepo       
     }
 }
 
@@ -83,7 +36,8 @@ extension WeatherDetailsViewModel {
     func fetchCurrentWeather(cityId: Int) {
         print("WeatherDetailsViewModel - fetchCurrentWeather - start")
         
-        self.data.value.update(isLoading: true, errorMessage: "")
+        self.isLoading.value = true
+        self.errorMessage.value = nil
         
         DispatchQueue.global(qos: .utility).async { [unowned self] in
             self.weatherRepo.findWeather(cityId: cityId, success: self.successHandler(), failure: self.failureHandler())
@@ -93,7 +47,8 @@ extension WeatherDetailsViewModel {
     func fetchCurrentWeather(cityName: String) {
         print("WeatherDetailsViewModel - fetchCurrentWeather - start")
         
-        self.data.value.update(isLoading: true, errorMessage: "")
+        self.isLoading.value = true
+        self.errorMessage.value = nil
         
         DispatchQueue.global(qos: .utility).async { [unowned self] in
             self.weatherRepo.findWeather(cityName: cityName, success: self.successHandler(), failure: self.failureHandler())
@@ -104,7 +59,9 @@ extension WeatherDetailsViewModel {
         return { [weak self] weatherResult in
             guard let strongSelf = self else { return }
             
-            strongSelf.data.value.update(weatherResult: weatherResult, isLoading: false)
+            strongSelf.weatherResult.value = weatherResult
+            strongSelf.isLoading.value = false
+            
             strongSelf.insertSearchHistory(weatherResult: weatherResult)
         }
     }
@@ -132,7 +89,8 @@ extension WeatherDetailsViewModel {
                 break
             }
 
-            strongSelf.data.value.update(isLoading: false, errorMessage: errorMessage)
+            strongSelf.isLoading.value = false
+            strongSelf.errorMessage.value = errorMessage
         }
     }
 }
@@ -150,5 +108,39 @@ extension WeatherDetailsViewModel {
             print("WeatherDetailsViewModel - insertSearchHistory - error")
             print(error)
         }
+    }
+}
+
+// MARK: obtaining data from model
+
+extension WeatherDetailsViewModel {
+    func getCityNameText() -> String {
+        if let cityName = self.weatherResult.value?.cityName {
+            return cityName
+        }
+        
+        return "--"
+    }
+
+    func getWeatherText() -> String {
+        if let weather = self.weatherResult.value?.weather[0].main  {
+            return weather
+        }
+        
+        return "--"
+    }
+
+    func getTemperatureText() -> String {
+        if let temperature = self.weatherResult.value?.main.temp {
+            if (temperature.isNaN) {
+                return "--°"
+            }
+
+            let mTemp = (temperature - 273.15);
+
+            return "\(String(format: "%.1f", mTemp))°";
+        }
+        
+        return "--°"
     }
 }

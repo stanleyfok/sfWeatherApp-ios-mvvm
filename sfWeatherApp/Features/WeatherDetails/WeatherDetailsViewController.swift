@@ -56,23 +56,37 @@ class WeatherDetailsViewController: UIViewController {
     }
     
     private func setupBinding() {
-        weatherDetailsViewModel.data.bindAndFire { data in
-            DispatchQueue.main.async {
-                self.cityNameLabel.text = data.getCityNameText()
-                self.weatherLabel.text = data.getWeatherText()
-                self.temperatureLabel.text = data.getTemperatureText()
+        weatherDetailsViewModel.weatherResult.bindAndFire { weatherResult in
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+
+                strongSelf.cityNameLabel.text = strongSelf.weatherDetailsViewModel.getCityNameText()
+                strongSelf.weatherLabel.text = strongSelf.weatherDetailsViewModel.getWeatherText()
+                strongSelf.temperatureLabel.text = strongSelf.weatherDetailsViewModel.getTemperatureText()
+            }
+        }
+        
+        weatherDetailsViewModel.isLoading.bind { isLoading in
+            DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
                 
-                if (data.isLoading) {
-                    self.activityIndicator.startAnimating()
+                if (isLoading) {
+                    strongSelf.activityIndicator.startAnimating()
                 } else {
-                    self.activityIndicator.stopAnimating()
+                    strongSelf.activityIndicator.stopAnimating()
                 }
-                
-                if (data.errorMessage != "") {
-                    let alert = UIAlertController(title: "Error", message: data.errorMessage, preferredStyle: .alert)
+            }
+        }
+        
+        weatherDetailsViewModel.errorMessage.bind { errorMessage in
+            DispatchQueue.main.async {[weak self] in
+                guard let strongSelf = self else { return }
+                    
+                if (errorMessage != nil) {
+                    let alert = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
                     
-                    self.present(alert, animated: true)
+                    strongSelf.present(alert, animated: true)
                 }
             }
         }
