@@ -40,7 +40,7 @@ extension WeatherDetailsViewModel {
         self.errorMessage.value = nil
         
         DispatchQueue.global(qos: .utility).async { [unowned self] in
-            self.weatherRepo.findWeather(cityId: cityId, success: self.successHandler(), failure: self.failureHandler())
+            self.weatherRepo.findWeather(by: cityId, success: self.successHandler(), failure: self.failureHandler())
         }
     }
     
@@ -51,7 +51,7 @@ extension WeatherDetailsViewModel {
         self.errorMessage.value = nil
         
         DispatchQueue.global(qos: .utility).async { [unowned self] in
-            self.weatherRepo.findWeather(cityName: cityName, success: self.successHandler(), failure: self.failureHandler())
+            self.weatherRepo.findWeather(by: cityName, success: self.successHandler(), failure: self.failureHandler())
         }
     }
     

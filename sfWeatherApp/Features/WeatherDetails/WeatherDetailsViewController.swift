@@ -41,6 +41,7 @@ class WeatherDetailsViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowHistorySegue" {
             if let destinationVC = segue.destination as? WeatherHistoryViewController {
+                // TODO: segue makes depedenct injection hard
                 destinationVC.weatherHistoryViewModel = WeatherHistoryViewModel(weatherRepo: weatherRepo)
                 destinationVC.weatherDetailsViewControllerDelegate = self
             }

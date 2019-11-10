@@ -24,12 +24,12 @@ enum OpenWeatherError {
 class OpenWeatherService {
     let router = Router<OpenWeatherApi>()
 
-    func findByCityName(_ cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
+    func findBy(cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
         
         self.handleRequest(OpenWeatherApi.fetchWeatherByCityName(cityName), OWWeatherResult.self, success, failure)
     }
     
-    func findByCityId(_ cityId: Int, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
+    func findBy(cityId: Int, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
         
         self.handleRequest(OpenWeatherApi.fetchWeatherByCityId(cityId), OWWeatherResult.self, success, failure)
     }
