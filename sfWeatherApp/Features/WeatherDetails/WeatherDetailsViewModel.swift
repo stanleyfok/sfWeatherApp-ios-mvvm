@@ -85,7 +85,9 @@ extension WeatherDetailsViewModel {
         
         self.data.value.update(isLoading: true, errorMessage: "")
         
-        weatherRepo.findWeatherByCityId(cityId, success: successHandler(), failure: failureHandler())
+        DispatchQueue.global(qos: .utility).async { [unowned self] in
+            self.weatherRepo.findWeather(cityId: cityId, success: self.successHandler(), failure: self.failureHandler())
+        }
     }
     
     func fetchCurrentWeather(cityName: String) {
@@ -93,11 +95,13 @@ extension WeatherDetailsViewModel {
         
         self.data.value.update(isLoading: true, errorMessage: "")
         
-        weatherRepo.findWeatherByCityName(cityName, success: successHandler(), failure: failureHandler())
+        DispatchQueue.global(qos: .utility).async { [unowned self] in
+            self.weatherRepo.findWeather(cityName: cityName, success: self.successHandler(), failure: self.failureHandler())
+        }
     }
     
     private func successHandler() -> (OWWeatherResult) -> Void {
-        return {  [weak self] weatherResult in
+        return { [weak self] weatherResult in
             guard let strongSelf = self else { return }
             
             strongSelf.data.value.update(weatherResult: weatherResult, isLoading: false)
@@ -106,7 +110,7 @@ extension WeatherDetailsViewModel {
     }
     
     private func failureHandler() -> (OpenWeatherError, OWErrorResult?) -> Void {
-        return {  [weak self] error, errorResult in
+        return { [weak self] error, errorResult in
             guard let strongSelf = self else { return }
         
             var errorMessage:String;

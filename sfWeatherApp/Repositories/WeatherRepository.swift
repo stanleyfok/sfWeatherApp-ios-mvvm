@@ -12,11 +12,11 @@ struct WeatherRepository {
     let owService:OpenWeatherService = OpenWeatherService()
     let searchHistoryDAO:SearchHistoryDAO = SearchHistoryDAO()
     
-    func findWeatherByCityName(_ cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
+    func findWeather(cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
         owService.findByCityName(cityName, success: success, failure: failure)
     }
     
-    func findWeatherByCityId(_ cityId: Int, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
+    func findWeather(cityId: Int, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
         owService.findByCityId(cityId, success: success, failure: failure)
     }
     

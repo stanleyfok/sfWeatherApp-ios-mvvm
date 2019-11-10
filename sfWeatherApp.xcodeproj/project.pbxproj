@@ -225,9 +225,9 @@
 		9FA98F1C22C724EF00985200 /* sfWeatherApp */ = {
 			isa = PBXGroup;
 			children = (
-				2F46797A237739C60021C76C /* Features */,
 				2F4679792377359C0021C76C /* Databases */,
 				9FA98F6022C7E94200985200 /* Extensions */,
+				2F46797A237739C60021C76C /* Features */,
 				9FA98F5B22C76A1D00985200 /* Services */,
 				9FF1FE5D22C88DDD000A517E /* Repositories */,
 				9FA98F5A22C7654700985200 /* Utils */,

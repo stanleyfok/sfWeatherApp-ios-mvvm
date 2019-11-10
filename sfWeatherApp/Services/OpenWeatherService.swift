@@ -21,7 +21,7 @@ enum OpenWeatherError {
     case unknownError
 }
 
-struct OpenWeatherService {
+class OpenWeatherService {
     let router = Router<OpenWeatherApi>()
 
     func findByCityName(_ cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
@@ -46,7 +46,7 @@ extension OpenWeatherService {
     }
     
     fileprivate func handleRequest<T>(_ weatherApi: OpenWeatherApi, _ type: T.Type, _ success: @escaping (_ result: T) -> Void, _ failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) where T : Decodable {
-        router.request(weatherApi) { data, response, error in
+        self.router.request(weatherApi) { data, response, error in
               guard error == nil else {
                   failure(.networkError, nil)
                   
