@@ -9,14 +9,14 @@
 import Foundation
 
 struct WeatherRepository {
-    let owService:OpenWeatherService = OpenWeatherService()
+    let owService:OWService = OWService()
     let searchHistoryDAO:SearchHistoryDAO = SearchHistoryDAO()
     
-    func findWeather(by cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
+    func findWeather(by cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OWError, _ errorResult: OWErrorResult?) -> Void) {
         owService.findBy(cityName: cityName, success: success, failure: failure)
     }
     
-    func findWeather(by cityId: Int, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
+    func findWeather(by cityId: Int, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OWError, _ errorResult: OWErrorResult?) -> Void) {
         owService.findBy(cityId: cityId, success: success, failure: failure)
     }
     

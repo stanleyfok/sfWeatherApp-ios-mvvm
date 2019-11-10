@@ -69,7 +69,7 @@ struct OWWeatherResult: Decodable {
     
     struct OWWind: Decodable {
         var speed: Float
-        var deg: Float
+        var deg: Float?
     }
     
     struct OWClouds: Decodable {

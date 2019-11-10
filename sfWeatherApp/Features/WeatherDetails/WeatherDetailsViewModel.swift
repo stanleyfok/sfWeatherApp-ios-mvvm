@@ -66,7 +66,7 @@ extension WeatherDetailsViewModel {
         }
     }
     
-    private func failureHandler() -> (OpenWeatherError, OWErrorResult?) -> Void {
+    private func failureHandler() -> (OWError, OWErrorResult?) -> Void {
         return { [weak self] error, errorResult in
             guard let strongSelf = self else { return }
         

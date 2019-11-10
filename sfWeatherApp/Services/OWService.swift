@@ -1,5 +1,5 @@
 //
-//  OpenWeatherService.swift
+//  OWService.swift
 //  sfWeatherApp
 //
 //  Created by Stanley Fok on 9/11/2019.
@@ -8,12 +8,12 @@
 
 import Foundation
 
-enum OpenWeatherNetworkResponse {
+enum OWNetworkResponse {
     case success
-    case failure(_ error: OpenWeatherError)
+    case failure(_ error: OWError)
 }
 
-enum OpenWeatherError {
+enum OWError {
     case networkError
     case noDataError
     case decodingError
@@ -21,31 +21,31 @@ enum OpenWeatherError {
     case unknownError
 }
 
-class OpenWeatherService {
-    let router = Router<OpenWeatherApi>()
+class OWService {
+    let router = Router<OWApi>()
 
-    func findBy(cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
+    func findBy(cityName: String, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OWError, _ errorResult: OWErrorResult?) -> Void) {
         
-        self.handleRequest(OpenWeatherApi.fetchWeatherByCityName(cityName), OWWeatherResult.self, success, failure)
+        self.handleRequest(OWApi.fetchWeatherByCityName(cityName), OWWeatherResult.self, success, failure)
     }
     
-    func findBy(cityId: Int, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) {
+    func findBy(cityId: Int, success: @escaping (_ weatherResult: OWWeatherResult) -> Void, failure: @escaping (_ error: OWError, _ errorResult: OWErrorResult?) -> Void) {
         
-        self.handleRequest(OpenWeatherApi.fetchWeatherByCityId(cityId), OWWeatherResult.self, success, failure)
+        self.handleRequest(OWApi.fetchWeatherByCityId(cityId), OWWeatherResult.self, success, failure)
     }
 }
 
-extension OpenWeatherService {
-    fileprivate func getNetworkResponse(_ response: HTTPURLResponse) -> OpenWeatherNetworkResponse {
+extension OWService {
+    fileprivate func getNetworkResponse(_ response: HTTPURLResponse) -> OWNetworkResponse {
         switch response.statusCode {
         case 200...299: return .success
-        case 401...500: return .failure(OpenWeatherError.knownError)
-        case 501...599: return .failure(OpenWeatherError.knownError)
-        default: return .failure(OpenWeatherError.unknownError)
+        case 401...500: return .failure(OWError.knownError)
+        case 501...599: return .failure(OWError.knownError)
+        default: return .failure(OWError.unknownError)
         }
     }
     
-    fileprivate func handleRequest<T>(_ weatherApi: OpenWeatherApi, _ type: T.Type, _ success: @escaping (_ result: T) -> Void, _ failure: @escaping (_ error: OpenWeatherError, _ errorResult: OWErrorResult?) -> Void) where T : Decodable {
+    fileprivate func handleRequest<T>(_ weatherApi: OWApi, _ type: T.Type, _ success: @escaping (_ result: T) -> Void, _ failure: @escaping (_ error: OWError, _ errorResult: OWErrorResult?) -> Void) where T : Decodable {
         self.router.request(weatherApi) { data, response, error in
               guard error == nil else {
                   failure(.networkError, nil)
@@ -69,8 +69,8 @@ extension OpenWeatherService {
                       } catch {
                           failure(.decodingError, nil)
                       }
-                  case .failure(let openWeatherError):
-                      if (openWeatherError.self == .knownError) {
+                  case .failure(let owError):
+                      if (owError.self == .knownError) {
                           do {
                               let errorResult = try JSONDecoder().decode(OWErrorResult.self, from: responseData)
                               
@@ -79,7 +79,7 @@ extension OpenWeatherService {
                               failure(.decodingError, nil)
                           }
                       } else {
-                          failure(openWeatherError, nil)
+                          failure(owError, nil)
                       }
                   }
               }

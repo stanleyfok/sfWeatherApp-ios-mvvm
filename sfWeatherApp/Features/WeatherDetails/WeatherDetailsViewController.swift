@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol WeatherDetailsViewControllerSelectHistoryDelegate {
+protocol WeatherDetailsViewControllerSelectHistoryDelegate: class {
     func onSelectWeatherHistory(_ cityId: Int)
 }
 
@@ -21,10 +21,14 @@ class WeatherDetailsViewController: UIViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var viewHistoryButton: UIButton!
     
-    var searchController: UISearchController?
+    lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchBar.delegate = self
+
+        return searchController;
+    }()
     
     let weatherRepo:WeatherRepository = WeatherRepository()
-
     lazy var weatherDetailsViewModel:WeatherDetailsViewModel = {
         return WeatherDetailsViewModel(weatherRepo: weatherRepo)
     }()
@@ -41,8 +45,6 @@ class WeatherDetailsViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowHistorySegue" {
             if let destinationVC = segue.destination as? WeatherHistoryViewController {
-                // TODO: segue makes depedenct injection hard
-                destinationVC.weatherHistoryViewModel = WeatherHistoryViewModel(weatherRepo: weatherRepo)
                 destinationVC.weatherDetailsViewControllerDelegate = self
             }
         }
@@ -51,8 +53,6 @@ class WeatherDetailsViewController: UIViewController {
     private func setupViews() {
         self.hideKeyboardWhenTappedAround()
         
-        searchController = UISearchController(searchResultsController: nil)
-        searchController?.searchBar.delegate = self
         navigationItem.searchController = searchController
     }
     
@@ -100,7 +100,7 @@ extension WeatherDetailsViewController: UISearchBarDelegate {
         
         searchBar.endEditing(true)
         
-        searchController?.isActive = false
+        searchController.isActive = false
     }
 }
 

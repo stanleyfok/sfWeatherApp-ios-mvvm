@@ -12,9 +12,13 @@ class WeatherHistoryViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var editNavButton: UIBarButtonItem!
+ 
+    let weatherRepo:WeatherRepository = WeatherRepository()
+    lazy var weatherHistoryViewModel:WeatherHistoryViewModel = {
+        return WeatherHistoryViewModel(weatherRepo: weatherRepo)
+    }()
     
-    var weatherHistoryViewModel:WeatherHistoryViewModel?
-    var weatherDetailsViewControllerDelegate: WeatherDetailsViewControllerSelectHistoryDelegate?
+    weak var weatherDetailsViewControllerDelegate: WeatherDetailsViewControllerSelectHistoryDelegate?
  
     override func viewDidLoad() {
         super .viewDidLoad()
@@ -26,7 +30,7 @@ class WeatherHistoryViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.weatherHistoryViewModel?.fetchAllSearchHistories();
+        self.weatherHistoryViewModel.fetchAllSearchHistories();
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -39,7 +43,7 @@ class WeatherHistoryViewController: UIViewController {
     }
     
     private func setupBinding() {
-        weatherHistoryViewModel?.cellViewModels.bind { cellData in
+        weatherHistoryViewModel.cellViewModels.bind { cellData in
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -69,15 +73,12 @@ extension WeatherHistoryViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let cellViewModel = weatherHistoryViewModel?.cellViewModels.value {
-            return cellViewModel.count
-        }
-        
-        return 0
+        let cellViewModels = weatherHistoryViewModel.cellViewModels.value
+        return cellViewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellViewModel = (weatherHistoryViewModel?.cellViewModels.value[indexPath.row])!;
+        let cellViewModel = weatherHistoryViewModel.cellViewModels.value[indexPath.row];
         
         var cell = tableView.dequeueReusableCell(withIdentifier: "WeatherHistoryCell")
         
@@ -93,16 +94,18 @@ extension WeatherHistoryViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cellViewModel = (weatherHistoryViewModel?.cellViewModels.value[indexPath.row])!;
+        let cellViewModel = weatherHistoryViewModel.cellViewModels.value[indexPath.row];
 
-        self.weatherDetailsViewControllerDelegate?.onSelectWeatherHistory(cellViewModel.getCityId())
+        if let delegate = self.weatherDetailsViewControllerDelegate {
+            delegate.onSelectWeatherHistory(cellViewModel.getCityId())
+        }
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let cellViewModel = (weatherHistoryViewModel?.cellViewModels.value[indexPath.row])!;
+        let cellViewModel = weatherHistoryViewModel.cellViewModels.value[indexPath.row];
 
         if editingStyle == .delete {
-            self.weatherHistoryViewModel?.removeSearchHistory(cityId: cellViewModel.getCityId())
+            self.weatherHistoryViewModel.removeSearchHistory(cityId: cellViewModel.getCityId())
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }

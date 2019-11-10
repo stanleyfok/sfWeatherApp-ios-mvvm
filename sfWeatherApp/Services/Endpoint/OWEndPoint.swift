@@ -1,5 +1,5 @@
 //
-//  OpenWeatherEndPoint.swift
+//  OWEndPoint.swift
 //  sfWeatherApp
 //
 //  Created by Stanley Fok on 9/11/2019.
@@ -8,12 +8,12 @@
 
 import Foundation
 
-public enum OpenWeatherApi {
+public enum OWApi {
     case fetchWeatherByCityName(_ cityName: String)
     case fetchWeatherByCityId(_ cityId: Int)
 }
 
-extension OpenWeatherApi: EndPointType {
+extension OWApi: EndPointType {
     var baseURL: URL {
         return URL(string: "https://api.openweathermap.org/data/2.5/")!
     }
